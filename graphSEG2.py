@@ -74,7 +74,7 @@ class SEG2grapher():
         import numpy as np
         
 
-        print(SEG2grapher.info()) # print simple user guide information 
+        # print(SEG2grapher.info()) # print simple user guide information 
         
         
         #Import SEG2 using Obspy
@@ -115,7 +115,7 @@ class SEG2grapher():
         plt.text(max(dist)-5, -8, 'shot location: %0.1f m'%(shot_location), fontsize=18, ha='right')
         # mng = plt.get_current_fig_manager()
         # mng.window.showMaximized()
-        plt.show() 
+        plt.show();
    
         return 
     
@@ -126,9 +126,9 @@ class SEG2grapher():
         import numpy as np
         import obspy
 
-        print(SEG2grapher.info()) # print simple user guide information 
-        
-        input("\n<<<Press ENTER to continue OR CTRL+C to end >>>")  # add press enter to continue?
+        #print(SEG2grapher.info()) # print simple user guide information 
+
+        fig = plt.figure()
         
         #Import SEG2 using Obspy
         obspySEG2_input = obspy.read(infile, format="seg2")
@@ -170,22 +170,59 @@ class SEG2grapher():
 
         # mng = plt.get_current_fig_manager()
         # mng.window.showMaximized()
- 
 
-        pcks = plt.ginput(n=nclicks, timeout=300, show_clicks=True) #using ginput to select values from plot
-        print('\n>> %d picks made, output pick values:' %(len(pcks)))
-        print(pcks)
-        
         if originalname == 'true':
-            outpckfilename = os.path.splitext(infile)[0] #to keep original in file name
-            outpckfilename = outpckfilename+'.txt'
-            print(outpckfilename)
+            outpckfilename = os.path.splitext(infile)[0] + '.txt'
         elif originalname == 'false':
             outpckfilename = input("Write the output file's name as filename.txt OR file location as ./foldername/filename.txt:")
-        np.savetxt(outpckfilename, pcks)
+        else:
+            outpckfilename = originalname
 
+        pcks = []
+        pick_marks = []
 
-        plt.show() 
+        def finish_picking():
+            fig.canvas.mpl_disconnect(click_connection)
+            fig.canvas.mpl_disconnect(key_connection)
+            np.savetxt(outpckfilename, pcks)
+            print('\n>> %d picks made, output pick values:' % len(pcks))
+            print(pcks)
+
+        def on_click(event):
+            if event.inaxes is not fig.axes[0]:
+                return
+
+            if event.button == 1:
+                pcks.append((event.xdata, event.ydata))
+                mark, = fig.axes[0].plot(event.xdata, event.ydata, 'r+')
+                pick_marks.append(mark)
+                fig.canvas.draw_idle()
+            elif event.button == 3 and pcks:
+                pcks.pop()
+                pick_marks.pop().remove()
+                fig.canvas.draw_idle()
+            elif event.button == 2:
+                finish_picking()
+
+        def on_key(event):
+            if event.key in ('enter', 'escape'):
+                finish_picking()
+
+        click_connection = fig.canvas.mpl_connect('button_press_event', on_click)
+        key_connection = fig.canvas.mpl_connect('key_press_event', on_key)
+        fig.canvas.draw()
+
+        try:
+            from IPython import get_ipython
+            running_in_notebook = (
+                get_ipython() is not None
+                and get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
+            )
+        except ImportError:
+            running_in_notebook = False
+
+        if not running_in_notebook:
+            plt.show()
 
         return 
     
@@ -197,7 +234,7 @@ class SEG2grapher():
         from linearstatistics import linestatistics as lstats
         import os
         
-        print(SEG2grapher.info()) # print simple user guide information
+        # print(SEG2grapher.info()) # print simple user guide information
         
         pckdata = pd.read_csv(pckfile, sep="\s", header=None, engine='python')
         
@@ -398,7 +435,7 @@ class SEG2grapher():
         # plt.text(txt2[0], txt2[1], 'y = %0.3fx + %0.3f'%(m_refract,b_refract), fontsize=18, ha=hanchor, va=vanchor)
         plt.show()
         
-        return
+        return m_dir, m_refract, b_refract-b_dir
     
     @staticmethod
     def crossover(pckfile, show_autocrossover): #pick cross over point
