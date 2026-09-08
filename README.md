@@ -1,21 +1,33 @@
 # graphSEG2: a Python based interactive Seismic Refraction Graphing Toolset 
 
+## About this fork
+
+This is a fork from [tonianr/graphSEG2](https://github.com/tonianr/graphSEG2) with some internal changes to make the interactive picker work in python notebooks which can be run in Jupter-Lab or e.g. mybinder.org.
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/KDFischer/graphSEG2/main?urlpath=%2Fdoc%2Ftree%2Finteractive_picker.ipynb)
+
+## Original Readme.md
+
 Seismic refraction datasets are crucial to Near-surface geophysical explorations and are often used to delineate depths to bedrock. This Python 3 module utilizes the Obspy framework to read SEG2 refraction datasets and plot interactive stream datasets using the matplotlib.pyplot.ginput function. It was created as a simple way for students to visualize and analyze SEG2 datasets.
 
 Note: The user is advised that this toolset was created with SEG2 files from Geometrics, and they may need to adjust some data extract parameters within the graphSEG2.plot and graphSEG2.pick sections for use. According to obspy "UserWarning: Many companies use custom defined SEG2 header variables. This might cause basic header information reflected in the single traces' stats to be wrong (e.g. recording delays, first sample number, station code names, ..). Please check the complete list of additional unmapped header fields that gets stored in Trace.stats.seg2 and/or the manual of the source of the SEG2 files for fields that might influence e.g. trace start times."
 
 Table of contents
 -----------------
-- [Recommended ObsPy Installation](#Recommended-ObsPy-Installation)
-- [Importing](#Importing)
-- [SEG2grapher.plot](#seg2grapherplot)
-- [SEG2grapher.pick](#seg2grapherpick)
-  * [Making First Arrival Picks](#making-first-arrival-picks)
-- [SEG2grapher.analyze](#seg2grapheranalyze)
-- [SEG2grapher.crossover](#seg2graphercrossover)
-- [Other Information](#other-information)
-- [Possible Hiccups](#possible-hiccups)
-  * [non-GUI Backend Error](#non-GUI-Backend-Error)
+- [graphSEG2: a Python based interactive Seismic Refraction Graphing Toolset](#graphseg2-a-python-based-interactive-seismic-refraction-graphing-toolset)
+  - [About this fork](#about-this-fork)
+  - [Original Readme.md](#original-readmemd)
+  - [Table of contents](#table-of-contents)
+  - [Recommended ObsPy Installation](#recommended-obspy-installation)
+  - [Importing](#importing)
+  - [SEG2grapher.plot](#seg2grapherplot)
+  - [SEG2grapher.pick](#seg2grapherpick)
+      - [Making First Arrival Picks](#making-first-arrival-picks)
+  - [SEG2grapher.analyze](#seg2grapheranalyze)
+  - [SEG2grapher.crossover](#seg2graphercrossover)
+  - [Other Information](#other-information)
+  - [Possible Hiccups](#possible-hiccups)
+      - [non-GUI Backend Error](#non-gui-backend-error)
 
 ## Recommended ObsPy Installation
 
